@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# EULA
+if [ "$EULA"  == "TRUE" ]; then
+        sed -i "s/eula=false/eula=true/g" eula.txt
+else
+        cat eula.txt
+        exit 1
+fi
+
+# server.properties
+
+if [ "$NOAUTH"  == "TRUE" ]; then
+        sed -i "s/online-mode=true/online-mode=false/g" server.properties
+fi
+
+if [ "$NOPVP"  == "TRUE" ]; then
+        sed -i "s/pvp=true/pvp=false/g" server.properties
+fi
+
+if [ -n "$RCONPASSWD" ]; then
+        sed -i "s/enable-rcon=false/enable-rcon=ture/g" server.properties
+        echo "rcon.password=$RCONPASSWD" >> server.properties
+fi
+
+if [ -n "$MOTD" ]; then
+        sed -i "s/A Minecraft Server/$MOTD/g" server.properties
+fi
+
+if [ -n "$TEST" ]; then
+	cat server.properties
+	exit 0
+fi
+
+java -Xmx1G -Xms1G -jar minecraft_server.jar nogui
